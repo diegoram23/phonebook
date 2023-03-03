@@ -1,13 +1,12 @@
 import { useState } from 'react'
+import Contacts from './components/Contacts'
+import ContactForm from './components/ContactForm'
+import SearchContacts from './components/SearchContacts'
 
 function App() {
 
-  const [persons, setPersons] = useState([
-    {
-      "name": "Arto Hellas",
-      "number": "040-3424324",
-      "id": 1
-    },
+  const [contacts, setContacts] = useState([
+    { name: "Arto Hellas", number: "040-3424324", id: 1 },
     { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
     { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
     { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
@@ -21,7 +20,7 @@ function App() {
     setNewName(e.target.value)
   }
 
-  const handleNewNumber = (e) => {
+  const handleNumberChange = (e) => {
     setNewNumber(e.target.value)
   }
 
@@ -34,52 +33,43 @@ function App() {
     const personObj = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
+      id: contacts.length + 1
     }
-    setPersons(persons.concat(personObj))
+    setContacts(contacts.concat(personObj))
     setNewName('')
     setNewNumber('')
   }
 
   const handleSubmitPerson = (e) => {
     e.preventDefault()
-    const duplicate = persons.find(person => person.name === newName)
+    const duplicate = contacts.find(person => person.name === newName)
     duplicate ? alert(`${newName} is already in your contacts`)
       : addPerson()
   }
 
-  const searchMatch = persons.filter(person =>
+  const searchMatch = contacts.filter(person =>
     person.name.toLocaleLowerCase().includes(searchContact.toLowerCase()))
-  searchMatch ? searchMatch : persons
+  searchMatch ? searchMatch : contacts
 
   return (
     <div>
       <h2>Phonebook</h2>
-      Search: <input
-        value={searchContact}
-        onChange={handleSearchContact} />
-      <form onSubmit={handleSubmitPerson}>
-        <h3>Add Contact</h3>
-        <div>
-          Name: <input
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          Number: <input
-            value={newNumber}
-            onChange={handleNewNumber}
-          />
-        </div>
-        <div>
-          <button type='submit'>Add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {searchMatch.map(person =>
-        <p key={person.id}>{person.name} {person.number}</p>
-      )}
+      <SearchContacts 
+        searchValue={searchContact}
+        handleSearchChange={handleSearchContact}
+      />
+  
+      <ContactForm
+        handleSubmit={handleSubmitPerson}
+        nameValue={newName}
+        handleNameChange={handleNameChange}
+        numberValue={newNumber}
+        handleNumberChange={handleNumberChange}
+        type='submit'
+      />
+      <Contacts
+        searchMatch={searchMatch}
+      />
     </div>
   )
 }
