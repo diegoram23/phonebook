@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import contactsService from './contacts'
 import Contacts from './components/Contacts'
 import ContactForm from './components/ContactForm'
 import SearchContacts from './components/SearchContacts'
@@ -12,12 +13,11 @@ function App() {
   const [searchContact, setSearchContact] = useState('')
 
   useEffect(() => {
-    console.log('effect ran');
-    axios
-    .get('http://localhost:3001/persons')
-    .then(res => {
-      setContacts(res.data)
-    })
+    contactsService
+      .getAll()
+      .then(initialContacts => {
+        setContacts(initialContacts)
+      })
   }, [])
 
   const handleNameChange = (e) => {
@@ -33,22 +33,25 @@ function App() {
 
   }
 
-  const addPerson = () => {
-    const personObj = {
-      name: newName,
-      number: newNumber,
-      id: contacts.length + 1
-    }
-    setContacts(contacts.concat(personObj))
-    setNewName('')
-    setNewNumber('')
-  }
-
   const handleSubmitPerson = (e) => {
     e.preventDefault()
     const duplicate = contacts.find(person => person.name === newName)
     duplicate ? alert(`${newName} is already in your contacts`)
       : addPerson()
+  }
+
+  const addPerson = () => {
+    const personObj = {
+      name: newName,
+      number: newNumber,
+    }
+    contactsService
+      .createContact(personObj)
+      .then(returnedContact => {
+        setContacts(contacts.concat(returnedContact))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const searchMatch = contacts.filter(person =>
@@ -58,11 +61,11 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
-      <SearchContacts 
+      <SearchContacts
         searchValue={searchContact}
         handleSearchChange={handleSearchContact}
       />
-  
+
       <ContactForm
         handleSubmit={handleSubmitPerson}
         nameValue={newName}

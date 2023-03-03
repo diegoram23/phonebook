@@ -8,6 +8,7 @@ const Contacts = ({ searchMatch }) => {
                 <p key={person.id}>
                     {person.name}
                     {person.number}
+                    <button>Delete</button>
                 </p>
             )}
         </div>
