@@ -58,6 +58,20 @@ function App() {
     person.name.toLocaleLowerCase().includes(searchContact.toLowerCase()))
   searchMatch ? searchMatch : contacts
 
+    const deleteContact = (id, name) => {
+    contactsService
+    .deleteContact(id)
+    .then(() => {
+      window.confirm(`Are you sure you want to delete ${name}`)
+      contactsService
+      .getAll()
+      .then(initialContacts => {
+        setContacts(initialContacts)
+      })
+    })
+    }
+
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -76,6 +90,7 @@ function App() {
       />
       <Contacts
         searchMatch={searchMatch}
+        handleDeleteContact={deleteContact}
       />
     </div>
   )
