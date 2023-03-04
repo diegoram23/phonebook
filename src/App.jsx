@@ -7,7 +7,7 @@ import SearchContacts from './components/SearchContacts'
 
 function App() {
 
-  const [contacts, setContacts] = useState([])
+  const [contacts, setContacts] = useState(null)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchContact, setSearchContact] = useState('')
@@ -54,25 +54,22 @@ function App() {
       })
   }
 
-  const searchMatch = contacts.filter(person =>
-    person.name.toLocaleLowerCase().includes(searchContact.toLowerCase()))
-  searchMatch ? searchMatch : contacts
-
-    const deleteContact = (id, name) => {
+  const deleteContact = (id, name) => {
     contactsService
-    .deleteContact(id)
-    .then(() => {
-      window.confirm(`Are you sure you want to delete ${name}`)
-      contactsService
-      .getAll()
-      .then(initialContacts => {
-        setContacts(initialContacts)
+      .deleteContact(id)
+      .then(() => {
+        window.confirm(`Are you sure you want to delete ${name}`)
+        contactsService
+          .getAll()
+          .then(initialContacts => {
+            setContacts(initialContacts)
+          })
       })
-    })
-    }
+  }
 
 
   return (
+    
     <div>
       <h2>Phonebook</h2>
       <SearchContacts
@@ -88,10 +85,11 @@ function App() {
         handleNumberChange={handleNumberChange}
         type='submit'
       />
-      <Contacts
-        searchMatch={searchMatch}
+      { contacts && <Contacts
         handleDeleteContact={deleteContact}
-      />
+        contacts={contacts}
+        searchContact={searchContact}
+      />}
     </div>
   )
 }
