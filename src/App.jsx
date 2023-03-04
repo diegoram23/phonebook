@@ -4,6 +4,7 @@ import contactsService from './contacts'
 import Contacts from './components/Contacts'
 import ContactForm from './components/ContactForm'
 import SearchContacts from './components/SearchContacts'
+import Notification from './components/Notification'
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchContact, setSearchContact] = useState('')
+  const [contactAddedMessage, setContactAddedMessage] = useState('You added Jimbo to your contacts')
 
   useEffect(() => {
     contactsService
@@ -49,8 +51,13 @@ function App() {
       .createContact(personObj)
       .then(returnedContact => {
         setContacts(contacts.concat(returnedContact))
-        setNewName('')
-        setNewNumber('')
+        setContactAddedMessage(`You added ${returnedContact.name} to your contacts`)
+        setTimeout(() => {
+          setContactAddedMessage(null)
+          setNewName('')
+          setNewNumber('')
+        }, 1500);
+
       })
   }
 
@@ -69,7 +76,7 @@ function App() {
 
 
   return (
-    
+
     <div>
       <h2>Phonebook</h2>
       <SearchContacts
@@ -85,7 +92,12 @@ function App() {
         handleNumberChange={handleNumberChange}
         type='submit'
       />
-      { contacts && <Contacts
+
+      <Notification
+        successMessage={contactAddedMessage}
+      />
+
+      {contacts && <Contacts
         handleDeleteContact={deleteContact}
         contacts={contacts}
         searchContact={searchContact}
