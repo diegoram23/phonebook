@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import contactsService from './contacts'
 import Contacts from './components/Contacts'
 import ContactForm from './components/ContactForm'
@@ -8,11 +7,12 @@ import Notification from './components/Notification'
 
 function App() {
 
-  const [contacts, setContacts] = useState(null)
+  const [contacts, setContacts] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchContact, setSearchContact] = useState('')
-  const [contactAddedMessage, setContactAddedMessage] = useState('You added Jimbo to your contacts')
+  const [contactAddedMessage, setContactAddedMessage] = useState(null)
+  const [errorMessageContact, setErrorMessageContact] = useState(null)
 
   useEffect(() => {
     contactsService
@@ -72,7 +72,16 @@ function App() {
             setContacts(initialContacts)
           })
       })
+      .catch(error => {
+        setErrorMessageContact(`${name} has already been deleted`)
+        setTimeout(() => {
+          setErrorMessageContact(null)
+        }, 1500);
+      })
   }
+  const searchMatch = contacts.filter(person =>
+    person.name.toLowerCase().includes(searchContact.toLowerCase()))
+  searchMatch ? searchMatch : contacts
 
 
   return (
@@ -95,13 +104,14 @@ function App() {
 
       <Notification
         successMessage={contactAddedMessage}
+        errorMessage={errorMessageContact}
       />
 
-      {contacts && <Contacts
+      <Contacts
         handleDeleteContact={deleteContact}
         contacts={contacts}
-        searchContact={searchContact}
-      />}
+        searchMatch={searchMatch}
+      />
     </div>
   )
 }

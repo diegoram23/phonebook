@@ -1,9 +1,7 @@
 import React from "react";
 
-const Contacts = ({  handleDeleteContact, contacts, searchContact }) => {
-    const searchMatch = contacts.filter(person =>
-        person.name.toLowerCase().includes(searchContact.toLowerCase()))
-      searchMatch ? searchMatch : contacts
+const Contacts = ({  handleDeleteContact, searchMatch }) => {
+   
     return (
         <div>
             <h2>Contacts</h2>

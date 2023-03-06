@@ -2,12 +2,22 @@ h3 {
     margin: 0.3em;
 }
 
-.contact-added {
-    color: darkgreen;
+.message {
     font-size: 1.4rem;
     margin: 0.5em 0;
     padding: 0.4em;
-    border: 1px solid darkgreen;
     background-color: rgb(241, 241, 241);
     border-radius: 5px;
+}
+
+.contact-added {
+    border: 1px solid darkgreen;
+    color: darkgreen;
+   
+}
+
+.error-message {
+    color: red;
+    border: 1px solid red;
+  
 }
